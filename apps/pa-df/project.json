@@ -17,7 +17,11 @@
         "tsConfig": "apps/pa-df/tsconfig.app.json",
         "assets": ["apps/pa-df/src/favicon.ico", "apps/pa-df/src/assets"],
         "styles": ["apps/pa-df/src/styles.scss"],
-        "scripts": []
+        "scripts": [
+          "apps/pa-df/src/assets/pdftron/core/webviewer-core.min.js",
+          "apps/pa-df/src/assets/pdftron/core/pdf/PDFNet.js",
+          "apps/pa-df/src/assets/FileSaver.min.js"
+        ]
       },
       "configurations": {
         "production": {
