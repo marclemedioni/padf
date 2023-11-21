@@ -1,16 +1,7 @@
-<div class="pdf-content" #content>
-    <table>
-        <tr>
-            <th>Quantity</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Total</th>
-        </tr>
-        <tr *ngFor="let item of templateValues.items">
-            <td>{{item.qty}}</td>
-            <td>{{item.description}}</td>
-            <td>{{item.price}}</td>
-            <td>{{item.total}}</td>
-        </tr>
-      </table>
+<div>
+  <button (click)="downloadPDF()">Download</button>
+  <hr>
+  <iframe #iframe frameborder="1"></iframe>
+
 </div>
+
