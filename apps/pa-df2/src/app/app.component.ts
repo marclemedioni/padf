@@ -1,7 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import html2pdf from 'html2pdf.js';
 import * as Handlebars from 'handlebars';
-import html from 'raw-loader!../assets/templates/invoice.hbs'
+import invoiceHbs from 'raw-loader!../assets/templates/invoice.hbs';
+import badgeHbs from 'raw-loader!../assets/templates/badge.hbs';
 
 function padTo2Digits(num: number) {
   return num.toString().padStart(2, '0');
@@ -32,7 +33,7 @@ export class AppComponent {
 
   htmlContent!: string;
 
-  templateValues = {
+  invoiceTemplateValues = {
     logo: {
       image_url: 'http://localhost:4200/assets/img/logo_red.png',
       width: '64',
@@ -152,12 +153,56 @@ export class AppComponent {
     total_ttc: 8564123
   }
 
-  downloadPDF() {
-    const template = Handlebars.compile(html)
+  badgeTemplateValues = {
+    logo: {
+      image_url: 'http://localhost:4200/assets/img/logo_red.png',
+      width: '64',
+      height: '64',
+    },
+    photo: {
+      image_url: 'http://localhost:4200/assets/img/user-photo.png',
+      width: '64',
+      height: '64',
+    },
+    barcode: {
+      image_url: 'http://localhost:4200/assets/img/barcode.png',
+      width: '64',
+      height: '64',
+    },
+    name: 'Shirley P Rodriguez',
+    position: 'Guest'
+  }
+
+  downloadBadge() {
+    const badgeTemplate = Handlebars.compile(badgeHbs);
     const doc = this.iframe.nativeElement.contentDocument;
 
     doc.open();
-    doc.write(template(this.templateValues));
+    doc.write(badgeTemplate(this.badgeTemplateValues));
+    doc.close();
+
+    const content = this.iframe.nativeElement.contentDocument.body;
+
+    this.iframe.nativeElement.addEventListener("load", () => {
+      const options = {
+        filename: 'badge.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: {
+          unit: "mm",
+          format: [67, 99]
+        },
+      };
+
+      html2pdf().from(content).set(options).toPdf().get('pdf').save();
+    })
+  }
+
+  downloadInvoice() {
+    const invoiceTemplate = Handlebars.compile(invoiceHbs)
+    const doc = this.iframe.nativeElement.contentDocument;
+
+    doc.open();
+    doc.write(invoiceTemplate(this.invoiceTemplateValues));
     doc.close();
 
 
@@ -165,8 +210,7 @@ export class AppComponent {
 
     this.iframe.nativeElement.addEventListener("load", () => {
       const options = {
-        filename: 'document.pdf',
-        image: { type: 'jpeg' },
+        filename: 'invoice.pdf',
         pagebreak: { mode: 'avoid-all' },
         margin: 2,
         html2canvas:  { scale: 2 },
@@ -174,8 +218,5 @@ export class AppComponent {
 
       html2pdf().from(content).set(options).toPdf().get('pdf').save();
     })
-
-
-
   }
 }
